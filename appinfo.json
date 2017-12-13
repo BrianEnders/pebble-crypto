@@ -1,0 +1,57 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        "configurable"
+    ],
+    "companyName": "ouellette.brian@outlook.com",
+    "longName": "Crypto",
+    "projectType": "pebblejs",
+    "resources": {
+        "media": [
+            {
+                "file": "images/menu_icon.png",
+                "name": "IMAGE_MENU_ICON",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/logo_splash.png",
+                "name": "IMAGE_LOGO_SPLASH",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/tile_splash.png",
+                "name": "IMAGE_TILE_SPLASH",
+                "type": "bitmap"
+            },
+            {
+                "file": "fonts/UbuntuMono-Regular.ttf",
+                "name": "MONO_FONT_14",
+                "type": "font"
+            },
+            {
+                "file": "images/ltcicon.png",
+                "name": "IMAGES_LTCICON_PNG",
+                "type": "bitmap"
+            },
+            {
+                "file": "images/btcicon.png",
+                "menuIcon": true,
+                "name": "IMAGES_BTCICON_PNG",
+                "type": "bitmap"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "Crypto",
+    "targetPlatforms": [
+        "basalt",
+        "chalk"
+    ],
+    "uuid": "3c26ee2d-74c5-4ebd-a042-e7548a25fdd5",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "hiddenApp": false,
+        "watchface": false
+    }
+}
