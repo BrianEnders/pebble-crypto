@@ -18,7 +18,7 @@ var ajax = require('ajax');
 var splashCard = new UI.Card();
 var routesMenu = new UI.Menu();
 var fail_bg = '#b30000';
-
+ 
 var primary = '#111111';
 var secondary = '#DDDDDD';
 

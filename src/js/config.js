@@ -109,10 +109,6 @@ module.exports = [
 						"label": "Bahamian Dollar"
 					},
 					{
-						"value": "BTC",
-						"label": "Bitcoin"
-					},
-					{
 						"value": "BTN",
 						"label": "Bhutanese Ngultrum"
 					},
