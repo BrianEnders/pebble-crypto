@@ -1,9 +1,15 @@
 /**
- * Welcome to Pebble.js!
+ * Crypto Watch
  *
- * This is where you write your app.
+ * Get the spot price of Coinbase BTC and LTC value. Also check the value of a BTC and/or LTC address. Useful for paper wallets
+ * Now you can get a qrcode of the address for easy refernce to receive
+ *
+ * Author: Brian Ouellette
+ * Twitter: @Brian_Enders
+ *
  */
-
+var qrencode = require('qrcode');
+var Vector2 = require('vector2');
 var UI = require('ui');
 var Clay = require('clay');
 var sb = require('bitcoin');
@@ -103,13 +109,89 @@ function displayStuff(){
   });
 
   // Show the Menu, hide the splash
+	
+	routesMenu.on('select', function(e) {
+		if(wallets.length > 0)
+		{
+			if(e.itemIndex == 0)
+			{
+				
+				var code = qrencode.encodeString(wallets[0].address, 0, qrencode.QR_ECLEVEL_L, qrencode.QR_MODE_8, true);
+				var length = code.length;
+				var res = Feature.resolution();
+				var qrsize = length*2;
+				var start = res.x/2-qrsize;
+				
+				var walletView = new UI.Window({
+					backgroundColor: 'white'
+				});
+        var textfield = new UI.Text({
+					position: new Vector2(res.x/2-70, res.x/2+qrsize),
+          size: new Vector2(140, 60),
+          font: 'gothic-14',
+					color: 'black',
+          text: wallets[0].address,
+          textAlign: 'center'
+        });
+
+				for (var y=0; y<length; y++) {
+					for (var x=0; x<length; x++) {
+						var rect = new UI.Rect({ 
+							position: new Vector2(start+x*4, start+y*4),
+							size: new Vector2(4, 4),
+							backgroundColor: code[y][x] ? "black" : "white"
+						});
+
+						walletView.add(rect);
+						walletView.add(textfield);
+					}
+				}
+				walletView.show();
+			}
+			
+			if(wallets.length > 1 && e.itemIndex == 1)
+			{
+
+				var code = qrencode.encodeString(wallets[1].address, 0, qrencode.QR_ECLEVEL_L, qrencode.QR_MODE_8, true);
+				var length = code.length;
+				var res = Feature.resolution();
+				var qrsize = length*2;
+				var start = res.x/2-qrsize;
+				
+				var walletView = new UI.Window({
+					backgroundColor: 'white'
+				});
+        var textfield = new UI.Text({
+					position: new Vector2(res.x/2-70, res.x/2+qrsize),
+          size: new Vector2(140, 60),
+          font: 'gothic-14',
+					color: 'black',
+          text: wallets[1].address,
+          textAlign: 'center'
+        });
+
+				for (var y=0; y<length; y++) {
+					for (var x=0; x<length; x++) {
+						var rect = new UI.Rect({ 
+							position: new Vector2(start+x*4, start+y*4),
+							size: new Vector2(4, 4),
+							backgroundColor: code[y][x] ? "black" : "white"
+						});
+
+						walletView.add(rect);
+						walletView.add(textfield);
+						
+					}
+				}
+				walletView.show();
+			}
+		}
+	});
+	
   routesMenu.show();
   splashCard.hide(); 
 }
 
-/**
- * Ajax call for route data.
- */
 function loadPrices(){
   displaySplashScreen('Downloading Data...', primary);
 	var currency = Settings.option("KEY_EXCHANGE_CUR") == null ? "USD" : Settings.option("KEY_EXCHANGE_CUR");
