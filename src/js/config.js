@@ -764,11 +764,44 @@ module.exports = [
 		[
       {
         "type": "heading",
-        "defaultValue": "Donate BTC or LTC"
+        "defaultValue": "BCH Wallet"
+      },
+      {
+				"type": "input",
+				"appKey": "KEY_BCH_NAME_1",
+				"defaultValue": "BCH Wallet",
+				"label": "Wallet Name",
+				"attributes": {
+					"placeholder": "eg: MyBCHWallet",
+					"limit": 36,
+					"type": "text"
+			}
+			},
+			{
+				"type": "input",
+				"appKey": "KEY_BCH_ADDRESS_1",
+				"defaultValue": "",
+				"label": "Bitcoin Cash Address",
+				"attributes": 
+				{
+					"placeholder": "eg: 12345...",
+					"limit": 34,
+					"type": "text"
+				}
+			}
+    ]
+  },
+	{
+    "type": "section",
+    "items": 
+		[
+      {
+        "type": "heading",
+        "defaultValue": "Donate BTC, LTC, or BCH"
       },
       { 
 				"type": "text", 
-				"defaultValue": "Do you like my app? You can buy me a coffee by sending me some BTC or LTC. Copy the address below<h6>BTC: 1D9HuDKKYY5RiMmwicV4xfuRNhVNwtmNJP</h6><h6>LTC: LVVFkds7vYEN3yVDpXVPeMUtMYKZ8pNYbu</h6>" 
+				"defaultValue": "Do you like my app? You can buy me a coffee by sending me some BTC, LTC, or BCH. Copy the address below<h6>BTC: 1D9HuDKKYY5RiMmwicV4xfuRNhVNwtmNJP</h6><h6>LTC: LVVFkds7vYEN3yVDpXVPeMUtMYKZ8pNYbu</h6><h6>BCH: 15FzrbwukP8VBXoLmKBYfmb8ELK5NxTtns</h6>" 
 			}
     ]
   },

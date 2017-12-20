@@ -62,20 +62,63 @@ function displayStuff(){
 	
 	if(wallets.length > 0)
 	{
-		var priceAmount = (wallets[0].base=="BTC") ? prices[0].amount : prices[1].amount;
+		var priceAmount;
+		switch(wallets[0].base) {
+			case "BTC":
+				priceAmount = prices[0].amount;
+				break;
+			case "LTC":
+				priceAmount = prices[1].amount;
+				break;
+			case "BCH":
+				priceAmount = prices[2].amount;
+				break;
+		}
 		var fixAmount = priceAmount * sb.toBitcoin(wallets[0].balance);
 		menuView.push({
-			subtitle:sb.toBitcoin(wallets[0].balance)+((wallets[0].base=="BTC") ? " BTC" : " LTC"),
+			subtitle:sb.toBitcoin(wallets[0].balance)+" "+(wallets[0].base),
 			title:parseFloat(fixAmount).toFixed(2)
 		});
 	}
 	
 	if(wallets.length > 1)
 	{
-    var priceAmount = (wallets[1].base=="BTC") ? prices[0].amount : prices[1].amount;
+    var priceAmount;
+		switch(wallets[1].base) {
+			case "BTC":
+				priceAmount = prices[0].amount;
+				break;
+			case "LTC":
+				priceAmount = prices[1].amount;
+				break;
+			case "BCH":
+				priceAmount = prices[2].amount;
+				break;
+		}
 		var fixAmount = priceAmount * sb.toBitcoin(wallets[1].balance);
 		menuView.push({
-			subtitle:sb.toBitcoin(wallets[1].balance) +((wallets[1].base=="BTC") ? " BTC" : " LTC"),
+			subtitle:sb.toBitcoin(wallets[1].balance)+" "+(wallets[1].base),
+			title:parseFloat(fixAmount).toFixed(2)
+		});
+	}
+	
+	if(wallets.length > 2)
+	{
+    var priceAmount;
+		switch(wallets[2].base) {
+			case "BTC":
+				priceAmount = prices[0].amount;
+				break;
+			case "LTC":
+				priceAmount = prices[1].amount;
+				break;
+			case "BCH":
+				priceAmount = prices[2].amount;
+				break;
+		}
+		var fixAmount = priceAmount * sb.toBitcoin(wallets[2].balance);
+		menuView.push({
+			subtitle:sb.toBitcoin(wallets[2].balance)+" "+(wallets[2].base),
 			title:parseFloat(fixAmount).toFixed(2)
 		});
 	}
@@ -90,6 +133,12 @@ function displayStuff(){
 		title:prices[1].amount,
 		icon:'images/ltcicon.png',
 		subtitle:prices[1].currency+" Coinbase"
+	});
+
+	menuView.push({
+		title:prices[2].amount,
+		icon:'images/bchicon.png',
+		subtitle:prices[2].currency+" Coinbase"
 	});
 	
 
@@ -185,6 +234,43 @@ function displayStuff(){
 				}
 				walletView.show();
 			}
+			
+			if(wallets.length > 2 && e.itemIndex == 2)
+			{
+
+				var code = qrencode.encodeString(wallets[2].address, 0, qrencode.QR_ECLEVEL_L, qrencode.QR_MODE_8, true);
+				var length = code.length;
+				var res = Feature.resolution();
+				var qrsize = length*2;
+				var start = res.x/2-qrsize;
+				
+				var walletView = new UI.Window({
+					backgroundColor: 'white'
+				});
+        var textfield = new UI.Text({
+					position: new Vector2(res.x/2-70, res.x/2+qrsize),
+          size: new Vector2(140, 60),
+          font: 'gothic-14',
+					color: 'black',
+          text: wallets[2].address,
+          textAlign: 'center'
+        });
+
+				for (var y=0; y<length; y++) {
+					for (var x=0; x<length; x++) {
+						var rect = new UI.Rect({ 
+							position: new Vector2(start+x*4, start+y*4),
+							size: new Vector2(4, 4),
+							backgroundColor: code[y][x] ? "black" : "white"
+						});
+
+						walletView.add(rect);
+						walletView.add(textfield);
+						
+					}
+				}
+				walletView.show();
+			}
 		}
 	});
 	
@@ -197,6 +283,7 @@ function loadPrices(){
 	var currency = Settings.option("KEY_EXCHANGE_CUR") == null ? "USD" : Settings.option("KEY_EXCHANGE_CUR");
   var getBTCPrice = "https://api.coinbase.com/v2/prices/BTC-"+currency+"/spot";
 	var getLTCPrice = "https://api.coinbase.com/v2/prices/LTC-"+currency+"/spot";
+	var getBCHPrice = "https://api.coinbase.com/v2/prices/BCH-"+currency+"/spot";
   // Make the request for route data
 	
   ajax(
@@ -225,7 +312,25 @@ function loadPrices(){
 						amount:data.data.amount,
 						currency:data.data.currency
 					});
-					loadBTCWallet();
+					ajax(
+						{
+							url: getBCHPrice,
+							type: 'json'
+						},
+						function(data) {
+							// Success
+							prices.push({
+								base:data.data.base,
+								amount:data.data.amount,
+								currency:data.data.currency
+							});
+							loadBTCWallet();
+						},
+						function(error) {
+							// Failure!
+							displaySplashScreen('Failed to load BCH.', fail_bg);
+						}
+					);
 				},
 				function(error) {
 					// Failure!
@@ -288,11 +393,41 @@ function loadLTCWallet(){
 					base:"LTC"
 				});
 
-				displayStuff();
+				loadBCHWallet();
 			},
 			function(error) {
 				// Failure!
 				displaySplashScreen('Failed to load LTC Wallet.', fail_bg);
+			}
+		);
+	}else{
+		loadBCHWallet();
+	}
+}
+
+function loadBCHWallet(){
+	var balanceBCHUrl = "https://cashexplorer.bitcoin.com/insight-api/addr/"+Settings.option("KEY_BCH_ADDRESS_1");
+	
+	if(Settings.option("KEY_BCH_ADDRESS_1") != null && Settings.option("KEY_BCH_ADDRESS_1") != "")
+	{
+		ajax(
+			{
+				url: balanceBCHUrl,
+				type: 'json'
+			},
+			function(data) {
+				// Success
+				wallets.push({
+					balance:data.balanceSat,
+					address:data.addrStr,
+					base:"BCH"
+				});
+
+				displayStuff();
+			},
+			function(error) {
+				// Failure!
+				displaySplashScreen('Failed to load BCH Wallet.', fail_bg);
 			}
 		);
 	}else{

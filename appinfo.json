@@ -29,6 +29,11 @@
                 "type": "font"
             },
             {
+                "file": "images/bchicon.png",
+                "name": "IMAGES_BCHICON_PNG",
+                "type": "bitmap"
+            },
+            {
                 "file": "images/1.png",
                 "menuIcon": true,
                 "name": "IMAGES_1_PNG",
@@ -55,7 +60,7 @@
     ],
     "uuid": "3c26ee2d-74c5-4ebd-a042-e7548a25fdd5",
     "versionCode": 1,
-    "versionLabel": "1.2",
+    "versionLabel": "1.3",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false
