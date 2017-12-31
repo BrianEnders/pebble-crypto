@@ -797,11 +797,44 @@ module.exports = [
 		[
       {
         "type": "heading",
+        "defaultValue": "ETH Wallet"
+      },
+      {
+				"type": "input",
+				"appKey": "KEY_ETH_NAME_1",
+				"defaultValue": "ETH Wallet",
+				"label": "Wallet Name",
+				"attributes": {
+					"placeholder": "eg: MyETHWallet",
+					"limit": 42,
+					"type": "text"
+			}
+			},
+			{
+				"type": "input",
+				"appKey": "KEY_ETH_ADDRESS_1",
+				"defaultValue": "",
+				"label": "Ethereum Address",
+				"attributes": 
+				{
+					"placeholder": "eg: 0x1234...",
+					"limit": 42,
+					"type": "text"
+				}
+			}
+    ]
+  },
+	{
+    "type": "section",
+    "items": 
+		[
+      {
+        "type": "heading",
         "defaultValue": "Donate BTC, LTC, or BCH"
       },
       { 
 				"type": "text", 
-				"defaultValue": "Do you like my app? You can buy me a coffee by sending me some BTC, LTC, or BCH. Copy the address below<h6>BTC: 1D9HuDKKYY5RiMmwicV4xfuRNhVNwtmNJP</h6><h6>LTC: LVVFkds7vYEN3yVDpXVPeMUtMYKZ8pNYbu</h6><h6>BCH: 15FzrbwukP8VBXoLmKBYfmb8ELK5NxTtns</h6>" 
+				"defaultValue": "Do you like my app? You can buy me a coffee by sending me some BTC, LTC, BCH, or ETH. Copy one of the address below<h6>BTC: 1D9HuDKKYY5RiMmwicV4xfuRNhVNwtmNJP</h6><h6>LTC: LVVFkds7vYEN3yVDpXVPeMUtMYKZ8pNYbu</h6><h6>BCH: 15FzrbwukP8VBXoLmKBYfmb8ELK5NxTtns</h6><h6>ETH: 0xf02a22f7b4fd26264f6086c79785c80e04ed2256</h6>" 
 			}
     ]
   },

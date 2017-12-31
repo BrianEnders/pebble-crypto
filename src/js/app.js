@@ -13,6 +13,7 @@ var Vector2 = require('vector2');
 var UI = require('ui');
 var Clay = require('clay');
 var sb = require('bitcoin');
+var eth = require('ether');
 var Settings = require('settings');
 var clayConfig = require('config');
 var clay = new Clay(clayConfig, null, { autoHandleEvents: false });
@@ -30,7 +31,7 @@ var secondary = '#DDDDDD';
 
 var prices = [];
 var wallets = [];
-
+                               
 // Gets this all going
 loadPrices();
 
@@ -62,63 +63,113 @@ function displayStuff(){
 	
 	if(wallets.length > 0)
 	{
-		var priceAmount;
+    var priceAmount, fixAmount, displayAmount;
 		switch(wallets[0].base) {
 			case "BTC":
 				priceAmount = prices[0].amount;
+				displayAmount = sb.toBitcoin(wallets[0].balance);
 				break;
 			case "LTC":
 				priceAmount = prices[1].amount;
+				displayAmount = sb.toBitcoin(wallets[0].balance);
 				break;
 			case "BCH":
 				priceAmount = prices[2].amount;
+				displayAmount = sb.toBitcoin(wallets[0].balance);
+				break;
+			case "ETH":
+				priceAmount = prices[3].amount;
+				displayAmount = eth.toEther(wallets[0].balance);
 				break;
 		}
-		var fixAmount = priceAmount * sb.toBitcoin(wallets[0].balance);
+		fixAmount = priceAmount * displayAmount;
 		menuView.push({
-			subtitle:sb.toBitcoin(wallets[0].balance)+" "+(wallets[0].base),
+			subtitle:displayAmount+" "+(wallets[0].base),
 			title:parseFloat(fixAmount).toFixed(2)
 		});
 	}
 	
 	if(wallets.length > 1)
 	{
-    var priceAmount;
+    var priceAmount, fixAmount, displayAmount;
 		switch(wallets[1].base) {
 			case "BTC":
 				priceAmount = prices[0].amount;
+				displayAmount = sb.toBitcoin(wallets[1].balance);
 				break;
 			case "LTC":
 				priceAmount = prices[1].amount;
+				displayAmount = sb.toBitcoin(wallets[1].balance);
 				break;
 			case "BCH":
 				priceAmount = prices[2].amount;
+				displayAmount = sb.toBitcoin(wallets[1].balance);
+				break;
+			case "ETH":
+				priceAmount = prices[3].amount;
+				displayAmount = eth.toEther(wallets[1].balance);
 				break;
 		}
-		var fixAmount = priceAmount * sb.toBitcoin(wallets[1].balance);
+		fixAmount = priceAmount * displayAmount;
 		menuView.push({
-			subtitle:sb.toBitcoin(wallets[1].balance)+" "+(wallets[1].base),
+			subtitle:displayAmount+" "+(wallets[1].base),
 			title:parseFloat(fixAmount).toFixed(2)
 		});
 	}
 	
 	if(wallets.length > 2)
 	{
-    var priceAmount;
+    var priceAmount, fixAmount, displayAmount;
 		switch(wallets[2].base) {
 			case "BTC":
 				priceAmount = prices[0].amount;
+				displayAmount = sb.toBitcoin(wallets[2].balance);
 				break;
 			case "LTC":
 				priceAmount = prices[1].amount;
+				displayAmount = sb.toBitcoin(wallets[2].balance);
 				break;
 			case "BCH":
 				priceAmount = prices[2].amount;
+				displayAmount = sb.toBitcoin(wallets[2].balance);
+				break;
+			case "ETH":
+				priceAmount = prices[3].amount;
+				displayAmount = eth.toEther(wallets[2].balance);
 				break;
 		}
-		var fixAmount = priceAmount * sb.toBitcoin(wallets[2].balance);
+		fixAmount = priceAmount * displayAmount;
 		menuView.push({
-			subtitle:sb.toBitcoin(wallets[2].balance)+" "+(wallets[2].base),
+			subtitle:displayAmount+" "+(wallets[2].base),
+			title:parseFloat(fixAmount).toFixed(2)
+		});
+	}
+	
+	if(wallets.length > 3)
+	{
+    var priceAmount, fixAmount, displayAmount;
+		switch(wallets[3].base) {
+			case "BTC":
+				priceAmount = prices[0].amount;
+				displayAmount = sb.toBitcoin(wallets[3].balance);
+				break;
+			case "LTC":
+				priceAmount = prices[1].amount;
+				displayAmount = sb.toBitcoin(wallets[3].balance);
+				break;
+			case "BCH":
+				priceAmount = prices[2].amount;
+				displayAmount = sb.toBitcoin(wallets[3].balance);
+				break;
+			case "ETH":
+				priceAmount = prices[3].amount;
+				displayAmount = eth.toEther(wallets[3].balance);
+				break;
+		}
+		
+		fixAmount = priceAmount * displayAmount;
+		menuView.push({
+			subtitle:displayAmount+" "+(wallets[3].base),
 			title:parseFloat(fixAmount).toFixed(2)
 		});
 	}
@@ -141,6 +192,11 @@ function displayStuff(){
 		subtitle:prices[2].currency+" Coinbase"
 	});
 	
+	menuView.push({
+		title:prices[3].amount,
+		icon:'images/ethicon.png',
+		subtitle:prices[3].currency+" Coinbase"
+	});
 
 	
   // Add data & style to menu
@@ -271,6 +327,43 @@ function displayStuff(){
 				}
 				walletView.show();
 			}
+			
+			if(wallets.length > 3 && e.itemIndex == 3)
+			{
+
+				var code = qrencode.encodeString(wallets[3].address, 0, qrencode.QR_ECLEVEL_L, qrencode.QR_MODE_8, true);
+				var length = code.length;
+				var res = Feature.resolution();
+				var qrsize = length*2;
+				var start = res.x/2-qrsize;
+				
+				var walletView = new UI.Window({
+					backgroundColor: 'white'
+				});
+        var textfield = new UI.Text({
+					position: new Vector2(res.x/2-70, res.x/2+qrsize),
+          size: new Vector2(140, 60),
+          font: 'gothic-14',
+					color: 'black',
+          text: wallets[3].address,
+          textAlign: 'center'
+        });
+
+				for (var y=0; y<length; y++) {
+					for (var x=0; x<length; x++) {
+						var rect = new UI.Rect({ 
+							position: new Vector2(start+x*4, start+y*4),
+							size: new Vector2(4, 4),
+							backgroundColor: code[y][x] ? "black" : "white"
+						});
+
+						walletView.add(rect);
+						walletView.add(textfield);
+						
+					}
+				}
+				walletView.show();
+			}
 		}
 	});
 	
@@ -281,66 +374,46 @@ function displayStuff(){
 function loadPrices(){
   displaySplashScreen('Downloading Data...', primary);
 	var currency = Settings.option("KEY_EXCHANGE_CUR") == null ? "USD" : Settings.option("KEY_EXCHANGE_CUR");
-  var getBTCPrice = "https://api.coinbase.com/v2/prices/BTC-"+currency+"/spot";
-	var getLTCPrice = "https://api.coinbase.com/v2/prices/LTC-"+currency+"/spot";
-	var getBCHPrice = "https://api.coinbase.com/v2/prices/BCH-"+currency+"/spot";
-  // Make the request for route data
+  var getPrices = "https://api.coinbase.com/v2/prices/"+currency+"/spot";
 	
   ajax(
     {
-      url: getBTCPrice,
+      url: getPrices,
       type: 'json'
     },
     function(data) {
       // Success
 			
 			prices.push({
-				base:data.data.base,
-				amount:data.data.amount,
-				currency:data.data.currency
+				base:data.data[0].base,
+				amount:data.data[0].amount,
+				currency:data.data[0].currency
 			});
 
-			ajax(
-				{
-					url: getLTCPrice,
-					type: 'json'
-				},
-				function(data) {
-					// Success
-					prices.push({
-						base:data.data.base,
-						amount:data.data.amount,
-						currency:data.data.currency
-					});
-					ajax(
-						{
-							url: getBCHPrice,
-							type: 'json'
-						},
-						function(data) {
-							// Success
-							prices.push({
-								base:data.data.base,
-								amount:data.data.amount,
-								currency:data.data.currency
-							});
-							loadBTCWallet();
-						},
-						function(error) {
-							// Failure!
-							displaySplashScreen('Failed to load BCH.', fail_bg);
-						}
-					);
-				},
-				function(error) {
-					// Failure!
-					displaySplashScreen('Failed to load LTC.', fail_bg);
-				}
-			);
+			prices.push({
+				base:data.data[3].base,
+				amount:data.data[3].amount,
+				currency:data.data[3].currency
+			});
+			
+			prices.push({
+				base:data.data[1].base,
+				amount:data.data[1].amount,
+				currency:data.data[1].currency
+			});
+			
+			prices.push({
+				base:data.data[2].base,
+				amount:data.data[2].amount,
+				currency:data.data[2].currency
+			});
+			
+			loadBTCWallet();
+			
     },
     function(error) {
       // Failure!
-      displaySplashScreen('Failed to load BTC.', fail_bg);
+      displaySplashScreen('Failed to load Prices.', fail_bg);
     }
   );
 }
@@ -401,12 +474,12 @@ function loadLTCWallet(){
 			}
 		);
 	}else{
-		loadBCHWallet();
+		loadBCHWallet(); 
 	}
 }
 
 function loadBCHWallet(){
-	var balanceBCHUrl = "https://cashexplorer.bitcoin.com/insight-api/addr/"+Settings.option("KEY_BCH_ADDRESS_1");
+	var balanceBCHUrl = "https://blockdozer.com/insight-api/addr/"+Settings.option("KEY_BCH_ADDRESS_1");
 	
 	if(Settings.option("KEY_BCH_ADDRESS_1") != null && Settings.option("KEY_BCH_ADDRESS_1") != "")
 	{
@@ -423,11 +496,42 @@ function loadBCHWallet(){
 					base:"BCH"
 				});
 
-				displayStuff();
+				loadETHWallet();
 			},
 			function(error) {
 				// Failure!
 				displaySplashScreen('Failed to load BCH Wallet.', fail_bg);
+			}
+		);
+	}else{
+		loadETHWallet();
+	}
+}
+
+function loadETHWallet(){
+	var balanceETHUrl = "https://api.etherscan.io/api?module=account&action=balance&address="+Settings.option("KEY_ETH_ADDRESS_1")+"&tag=latest&apikey=XAPM9HS38MRV8D1UXXZSWHVYMX9FBQ38C2";
+	console.log(balanceETHUrl);
+	if(Settings.option("KEY_ETH_ADDRESS_1") != null && Settings.option("KEY_ETH_ADDRESS_1") != "")
+	{
+		ajax(
+			{
+				url: balanceETHUrl,
+				type: 'json'
+			},
+			function(data) {
+				
+				// Success
+				wallets.push({
+					balance:data.result,
+					address:Settings.option("KEY_ETH_ADDRESS_1"),
+					base:"ETH"
+				});
+
+				displayStuff();
+			},
+			function(error) {
+				// Failure!
+				displaySplashScreen('Failed to load ETH Wallet.', fail_bg);
 			}
 		);
 	}else{
