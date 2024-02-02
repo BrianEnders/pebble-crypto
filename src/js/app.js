@@ -384,31 +384,40 @@ function loadPrices(){
     function(data) {
       // Success
 			
-			prices.push({
-				base:data.data[0].base,
-				amount:data.data[0].amount,
-				currency:data.data[0].currency
-			});
-
-			prices.push({
-				base:data.data[3].base,
-				amount:data.data[3].amount,
-				currency:data.data[3].currency
-			});
+		for(d in data.data){
+			switch(data.data[d].base){
+				case "BTC":
+					prices[0]={
+						base:data.data[d].base,
+						amount:data.data[d].amount,
+						currency:data.data[d].currency
+					};
+					break;
+				case "LTC":
+					prices[1]={
+						base:data.data[d].base,
+						amount:data.data[d].amount,
+						currency:data.data[d].currency
+					};
+					break;
+				case "BCH":
+					prices[2]={
+						base:data.data[d].base,
+						amount:data.data[d].amount,
+						currency:data.data[d].currency
+					};         
+					break;
+				case "ETH":
+					prices[3]={
+						base:data.data[d].base,
+						amount:data.data[d].amount,
+						currency:data.data[d].currency
+					};         
+					break;           
+			}
+		}
 			
-			prices.push({
-				base:data.data[1].base,
-				amount:data.data[1].amount,
-				currency:data.data[1].currency
-			});
-			
-			prices.push({
-				base:data.data[2].base,
-				amount:data.data[2].amount,
-				currency:data.data[2].currency
-			});
-			
-			loadBTCWallet();
+		loadBTCWallet();
 			
     },
     function(error) {
